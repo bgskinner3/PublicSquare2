@@ -8,6 +8,10 @@ import AddNewsSource from "./AdminComponents/AddNewsSource";
 import Loading from "./Loading";
 import CreateBounty from "./CreateBounty";
 import Bounties from "./Bounties";
+import PageNotFound from "./PageNotFound";
+import SingleBounty from "./SingleBounty";
+import ChatMain from "@mui/icons-material/Forum";
+import VoteMain from "./VoteMain";
 
 export {
   Home,
@@ -19,5 +23,9 @@ export {
   AddNewsSource,
   Loading, 
   CreateBounty,
-  Bounties
+  Bounties,
+  PageNotFound,
+  SingleBounty,
+  ChatMain,
+  VoteMain
 }

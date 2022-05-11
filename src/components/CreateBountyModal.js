@@ -7,35 +7,81 @@ import { useQuery } from '@apollo/client';
 import { Loading } from '.';
 import { toast } from 'react-toastify';
 
-const Modal = (props) => {
+const CreateBountyModal = (props) => {
   const [open, setOpen] = useState(true);
-  const [free, setFree] = useState(true)
+  const [free, setFree] = useState(true);
   const navigate = useNavigate();
   const cancelButtonRef = useRef(null);
-  const { data , loading } = useQuery(GET_ALL_BOUNTIES);
-  const { setLink, link } = props;
+  const { data, loading } = useQuery(GET_ALL_BOUNTIES);
+  const { setLink, link, vaildLinks, setImage } = props;
 
+  //used to check if the entered link is an actual url link
+  const isValidUrl = (_string) => {
+    let url_string;
+    try {
+      url_string = new URL(_string);
+    } catch (_) {
+      return false;
+    }
+    return url_string.protocol === 'http:' || url_string.protocol === 'https:';
+  };
+
+  // checks if  the link is associated with a news organization the that we allow to post bounties on
+  // and sets the image and name in the view
+  const fillWIthCurrentSource = (link) => {
+    let start;
+    let end;
+    let name;
+    let pass = false;
+
+    if (free) {
+      start = link.indexOf('.') + 1;
+      name = link.slice(start);
+      end = name.indexOf('.com');
+      name = name.slice(0, end);
+    }
+
+    vaildLinks.map((org) => {
+      if (name === org.compare) {
+        setImage({
+          image: org.image,
+          id: org.id
+        });
+        pass = true;
+      }
+    });
+    return pass;
+  };
+
+  //on click checks the availabilty of the link, that is if it is already posted and in use
   const checkAvailability = async () => {
     try {
-      if(data) {
-        data.bounties.map((bounty) => {
-          if(bounty.link === link) {
-            toast.warning('This Bounty Already exists');
-            setFree(false)
-          }
-        })
-
-      }
-      if(free) {
-        toast.success('Available!');
-        setOpen(false);
+      if (!isValidUrl(link)) {
+        toast.warning('Please enter a vaild link');
+      } else {
+        if (data) {
+          data.bounties.map((bounty) => {
+            if (bounty.link === link) {
+              toast.warning('This Bounty Already exists');
+              setFree(false);
+            }
+          });
+        }
+        if (fillWIthCurrentSource(link)) {
+          toast.success('Available!');
+          setOpen(false);
+        } else {
+          toast.warning('Please enter a vaild link');
+        }
       }
     } catch (error) {
-      console.error('error occured while verifying link', error)
+      console.error('error occured while verifying link', error);
     }
   };
 
-  return loading ? (<Loading />) : (
+  return loading ? (
+    <Loading />
+  ) : (
     <Transition.Root show={open} as={Fragment}>
       <Dialog
         as="div"
@@ -52,7 +98,7 @@ const Modal = (props) => {
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+          <div className="fixed inset-0 bg-neutral-content bg-opacity-80 transition-opacity" />
         </Transition.Child>
 
         <div className="fixed z-10 inset-0 overflow-y-auto">
@@ -74,11 +120,11 @@ const Modal = (props) => {
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
               <Dialog.Panel className="relative inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-                <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                <div className="bg-base-300 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                   <div className="sm:flex sm:items-start">
-                    <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
+                    <div className="mx-auto flex-shrink-0 mt-8 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
                       <ExclamationIcon
-                        className="h-6 w-6 text-red-600"
+                        className="h-6 w-6 text-red-600 "
                         aria-hidden="true"
                       />
                     </div>
@@ -91,22 +137,21 @@ const Modal = (props) => {
                       </button>
                       <Dialog.Title
                         as="h3"
-                        className="text-lg mt-10 leading-6 font-medium text-gray-900"
+                        className="text-lg mt-10 leading-6 font-medium text-white"
                       >
                         Check Bounty Availability
                       </Dialog.Title>
                       <div className="mt-10">
-                        <p className="text-sm text-gray-500">
+                        <p className="text-sm text-gray">
                           There are many bounties current active or closed.
                           Check to see if your bounty is currently being voted
-                          on. Supplying a bounty not currently being discussed
-                          will result in a reward.
+                          on. Supplying a vaild bounty will result in a reward.
                         </p>
                       </div>
                     </div>
                   </div>
                 </div>
-                <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                <div className="bg-base-300 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
                   <div className="w-full relative">
                     <input
                       type="text"
@@ -117,34 +162,19 @@ const Modal = (props) => {
                       onChange={(e) => setLink(e.target.value)}
                     />
                     <label
-                      for="floating_filled"
+                      htmlFor="floating_filled"
                       className="absolute text-sm text-neutral-content duration-300 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] left-2.5 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4"
                     >
                       Link
                     </label>
                     <button
-                      class="btn btn-outline w-full"
+                      className="btn btn-outline w-full mt-5 mb-5"
                       type="button"
-                      onClick={() => checkAvailability()}
+                      onClick={(link) => checkAvailability(link)}
                     >
-                      Button
+                      Submit
                     </button>
                   </div>
-                  {/* <button
-                    type="button"
-                    className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm"
-                    onClick={() => setOpen(false)}
-                  >
-                    Deactivate
-                  </button>
-                  <button
-                    type="button"
-                    className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm"
-                    onClick={() => setOpen(false)}
-                    ref={cancelButtonRef}
-                  >
-                    Cancel
-                  </button> */}
                 </div>
               </Dialog.Panel>
             </Transition.Child>
@@ -155,4 +185,4 @@ const Modal = (props) => {
   );
 };
 
-export default Modal;
+export default CreateBountyModal;

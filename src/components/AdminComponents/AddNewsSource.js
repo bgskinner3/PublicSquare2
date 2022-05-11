@@ -29,6 +29,15 @@ const AddNewsSource = () => {
       token: authToken,
     },
   });
+  const isValidUrl = (_string) => {
+    let url_string;
+    try {
+      url_string = new URL(_string);
+    } catch (_) {
+      return false;
+    }
+    return url_string.protocol === 'http:' || url_string.protocol === 'https:';
+  };
 
   const handleUpload = async (e) => {
     const blob = URL.createObjectURL(e.target.files[0]);
@@ -44,15 +53,19 @@ const AddNewsSource = () => {
 
   const handleSubmit = async () => {
     try {
-      await createNewsSource({
-        variables: {
-          input: {
-            title: title,
-            pagelink: pageLink,
-            image: path,
+      if (isValidUrl(pageLink)) {
+        await createNewsSource({
+          variables: {
+            input: {
+              title: title,
+              pagelink: pageLink,
+              image: path,
+            },
           },
-        },
-      });
+        });
+      } else if(!isValidUrl(pageLink)) {
+        toast.warning('Please enter a vaild link');
+      }
     } catch (error) {
       console.error(error);
     }

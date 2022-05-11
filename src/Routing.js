@@ -5,7 +5,19 @@ import {
   Navigate,
   BrowserRouter as Router,
 } from 'react-router-dom';
-import { Home, Login, Signup, Footer, Account, AddNewsSource, CreateBounty, Bounties } from './components';
+import {
+  Home,
+  Login,
+  Signup,
+  Footer,
+  Account,
+  AddNewsSource,
+  CreateBounty,
+  Bounties,
+  PageNotFound,
+  SingleBounty,
+  ChatMain
+} from './components';
 
 const Routing = () => {
   return (
@@ -18,7 +30,10 @@ const Routing = () => {
           <Route exact path="/account" element={<Account />} />
           <Route exact path="/addsource" element={<AddNewsSource />} />
           <Route exact path="/create" element={<CreateBounty />} />
+          <Route exact path="/chatmain" element={<ChatMain />} />
           <Route exact path="/bounties" element={<Bounties />} />
+          <Route exact path="/bounties/:id" element={<SingleBounty />} />
+          <Route path="*" element={<PageNotFound />} />
         </Routes>
       </main>
       <Footer />

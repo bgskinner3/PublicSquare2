@@ -1,17 +1,24 @@
 import React from 'react';
 import publicsquarelogo from '../images/publicsquarelogo.png';
+import logogold from '../images/logogold.png'
 import { Link } from 'react-router-dom';
 import 'tw-elements';
 import { useNavigate } from 'react-router-dom';
 import { GET_SINGLE_USER } from '../graphql/queries';
 import { useQuery } from '@apollo/client';
 import { Loading } from '.';
+import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
+import LogoutIcon from '@mui/icons-material/Logout';
+import NoteAddIcon from '@mui/icons-material/NoteAdd';
+import PollIcon from '@mui/icons-material/Poll';
+import SearchIcon from '@mui/icons-material/Search';
+import NewspaperIcon from '@mui/icons-material/Newspaper';
 const token = process.env.REACT_APP_JWT_SECRET;
 
 const NavBar = () => {
   const navigate = useNavigate();
   const user = localStorage.getItem(token);
-  const { data: admin, loading } = useQuery(GET_SINGLE_USER, {
+  const { data, loading } = useQuery(GET_SINGLE_USER, {
     variables: {
       token: user,
     },
@@ -23,7 +30,23 @@ const NavBar = () => {
     <header>
       <nav className="navbar navbar-expand-lg shadow-md py-2 bg-white  relative flex items-center w-full justify-between">
         <Link to="/" className="h-16 pt-3 overflow-hidden">
-          <img src={publicsquarelogo} alt="" className="" />
+          <div
+            className="flex items-center text-base py-4 px-6 h-12 overflow-hidden text-ellipsis whitespace-nowrap rounded hover:text-white hover:bg-white transition duration-200 ease-in-out"
+            data-mdb-ripple="true"
+            data-mdb-ripple-color="dark"
+          >
+            <img src={logogold} alt="" className="" />
+          </div>
+        </Link>
+        <Link to="/bounties">
+          <div
+            className="flex items-center text-base py-4 px-6 h-12 overflow-hidden text-ellipsis whitespace-nowrap rounded hover:text-gray-900 hover:bg-gray-100 transition duration-200 ease-in-out"
+            data-mdb-ripple="true"
+            data-mdb-ripple-color="dark"
+          >
+            <SearchIcon />
+            <p>Explore</p>
+          </div>
         </Link>
 
         {!user ? (
@@ -112,7 +135,10 @@ const NavBar = () => {
                       navigate(`/account`);
                     }}
                   >
-                    Account
+                    <div>
+                      <AccountBalanceWalletIcon />
+                      <p className="text-xs">account</p>
+                    </div>
                   </div>
                 </li>
                 <li className="relative">
@@ -124,10 +150,44 @@ const NavBar = () => {
                       navigate(`/create`);
                     }}
                   >
-                    Create
+                    <div>
+                      <NoteAddIcon />
+                      <p className="text-xs"> Create</p>
+                    </div>
                   </div>
                 </li>
-                {admin.user.admin ? (
+                <li className="relative">
+                  <div
+                    className="flex items-center text-base py-4 px-6 h-12 overflow-hidden text-gray-700 text-ellipsis whitespace-nowrap rounded hover:text-gray-900 hover:bg-gray-100 transition duration-200 ease-in-out"
+                    data-mdb-ripple="true"
+                    data-mdb-ripple-color="dark"
+                    onClick={() => {
+                      navigate(`/bounties`);
+                    }}
+                  >
+                    <div>
+                      <PollIcon />
+                      <p className="text-xs">Vote</p>
+                    </div>
+                  </div>
+                </li>
+                <li className="relative">
+                  <div
+                    className="flex items-center text-base py-4 px-6 h-12 overflow-hidden text-gray-700 text-ellipsis whitespace-nowrap rounded hover:text-gray-900 hover:bg-gray-100 transition duration-200 ease-in-out"
+                    data-mdb-ripple="true"
+                    data-mdb-ripple-color="dark"
+                    onClick={() => {
+                      navigate(`/newsources`);
+                    }}
+                  >
+                    <div>
+                      <NewspaperIcon />
+                      <p className="text-xs">News Organizations</p>
+                    </div>
+                  </div>
+                </li>
+
+                {/* {data.user.admin ? (
                   <li className="relative">
                     <div
                       className="flex items-center text-base py-4 px-6 h-12 overflow-hidden text-gray-700 text-ellipsis whitespace-nowrap rounded hover:text-gray-900 hover:bg-gray-100 transition duration-200 ease-in-out"
@@ -142,7 +202,19 @@ const NavBar = () => {
                   </li>
                 ) : (
                   <></>
-                )}
+                )} */}
+                <li className="relative">
+                  <div
+                    className="flex items-center text-base py-4 px-6 h-12 overflow-hidden text-gray-700 text-ellipsis whitespace-nowrap rounded hover:text-gray-900 hover:bg-gray-100 transition duration-200 ease-in-out"
+                    data-mdb-ripple="true"
+                    data-mdb-ripple-color="dark"
+                    onClick={() => {
+                      navigate(`/addsource`);
+                    }}
+                  >
+                    Add NewsSource
+                  </div>
+                </li>
                 <li className="relative">
                   <div
                     className="flex items-center text-base py-4 px-6 h-12 overflow-hidden text-gray-700 text-ellipsis whitespace-nowrap rounded hover:text-gray-900 hover:bg-gray-100 transition duration-200 ease-in-out"
@@ -153,20 +225,17 @@ const NavBar = () => {
                       navigate(`/`);
                     }}
                   >
-                    Logout
+                    <div>
+                      <LogoutIcon />
+                      <p className="text-xs"> Logout</p>
+                    </div>
                   </div>
                 </li>
               </ul>
             </div>
           </div>
         )}
-        {user ? (
-          <div>
-            <div>wallet here</div>
-          </div>
-        ) : (
-          <></>
-        )}
+        {/* {user ? <AccountBalanceWalletIcon /> : <></>} */}
       </nav>
     </header>
   );

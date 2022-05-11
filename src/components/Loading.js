@@ -9,8 +9,8 @@ const Loading = () => {
     <div className="flex h-screen justify-center items-center ">
       <div className="border border-neutral-content shadow rounded-md p-20 ">
         <div className="animate-pulse flex space-x-4">
-          <div class="avatar">
-            <div class="w-24 rounded-full ring ring-neutral-content ring-offset-base-100 ring-offset-2">
+          <div className="avatar">
+            <div className="w-24 rounded-full ring ring-neutral-content ring-offset-base-100 ring-offset-2">
               <img src={publicsquarelogo} alt="" />
             </div>
           </div>
