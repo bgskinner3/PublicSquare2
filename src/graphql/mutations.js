@@ -109,3 +109,14 @@ export const DELETE_BOUNTY_MUTATION = gql`
     }
   }
 `;
+
+export const CREATE_BOUNTY_VOTE_MUTATION = gql`
+  mutation createBountyVote($input: createBountyVoteInput!) {
+    createBountyVote(input: $input) {
+    userId
+    bountyId
+    positiveVote
+    negativeVote
+    }
+  }
+`;

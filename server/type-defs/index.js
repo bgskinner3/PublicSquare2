@@ -52,6 +52,7 @@ const typeDefs = gql`
     bountyvotes: [BountyVote!]!
     bountyvote(id: ID!): BountyVote!
     userbountyvotes(userId: ID!): [BountyVote!]
+    singlebountyvotes(bountyId: ID!): [BountyVote!]
   }
   input UserInput {
     username: String!

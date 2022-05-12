@@ -97,3 +97,36 @@ export const GET_SINGLE_BOUNTY = gql`
     }
   }
 `;
+
+export const GET_ALL_BOUNTY_VOTES = gql`
+  query bountyvotes {
+    bountyvotes {
+      bountyId
+      userId
+      negativeVote
+      positiveVote
+    }
+  }
+`;
+
+export const GET_USER_BOUNTY_VOTES = gql`
+  query ($userId: ID!) {
+    userbountyvotes(id: $userId) {
+      userId
+      bountyId
+      negativeVote
+      positiveVote
+    }
+  }
+`;
+
+export const GET_SINGLE_BOUNTY_VOTES = gql`
+  query ($bountyId: ID!) {
+    singlebountyvotes(id: $bountyId) {
+      userId
+      bountyId
+      negativeVote
+      positiveVote
+    }
+  }
+`;

@@ -78,7 +78,6 @@ const resolvers = {
       return votes;
     },
     userbountyvotes: async (parent, args) => {
-      console.log(args);
       const { userId } = args;
       const userVotes = await BountyVote.findAll({
         where: {
@@ -87,6 +86,15 @@ const resolvers = {
       });
       return userVotes;
     },
+    singlebountyvotes: async (parent, args) => {
+      const {bountyId} = args
+      const bountyVotes = await BountyVote.findAll({
+        where: {
+          bountyId: bountyId
+        }
+      })
+      return bountyVotes
+    }
   },
   Upload: GraphQLUpload,
   Date: dateScalar,
@@ -259,18 +267,11 @@ const resolvers = {
     },
     createBountyVote: async (parent, args) => {
       try {
-      
-        const {
-          userId,
-          positiveVote,
-          negativeVote,
-          bountyId,
-         
-        } = args.input;
+        const { userId, positiveVote, negativeVote, bountyId } = args.input;
         const exisitngUserVote = await BountyVote.findOne({
           where: {
             userId: userId,
-            bountyId: bountyId
+            bountyId: bountyId,
           },
           raw: true,
         });
@@ -282,15 +283,14 @@ const resolvers = {
           userId: userId,
           positiveVote: positiveVote || 0,
           negativeVote: negativeVote || 0,
-          bountyId: bountyId
+          bountyId: bountyId,
         });
 
         return vote;
-    
       } catch (error) {
-        console.error('vote did not go through', error)
+        console.error('vote did not go through', error);
       }
-    }
+    },
   },
 };
 
