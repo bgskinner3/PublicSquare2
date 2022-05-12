@@ -87,6 +87,7 @@ const resolvers = {
       return userVotes;
     },
     singlebountyvotes: async (parent, args) => {
+      console.log('args', args)
       const {bountyId} = args
       const bountyVotes = await BountyVote.findAll({
         where: {

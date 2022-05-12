@@ -122,7 +122,7 @@ export const GET_USER_BOUNTY_VOTES = gql`
 
 export const GET_SINGLE_BOUNTY_VOTES = gql`
   query ($bountyId: ID!) {
-    singlebountyvotes(id: $bountyId) {
+    singlebountyvotes(bountyId: $bountyId) {
       userId
       bountyId
       negativeVote

@@ -3,6 +3,7 @@ import { GET_ALL_BOUNTIES, GET_SINGLE_USER } from '../graphql/queries';
 import { useQuery, useMutation } from '@apollo/client';
 import { Loading } from '.';
 import {CREATE_BOUNTY_VOTE_MUTATION} from '../graphql/mutations'
+import VotingBountyProgress from './VotingBountyProgress';
 const jwtAuth = process.env.REACT_APP_JWT_SECRET;
 
 const BountyVote = () => {
@@ -122,7 +123,7 @@ const BountyVote = () => {
                   </div>
                 </div>
               </div>
-              
+
               <div className="flex lg:w-4/12 lg:mr-7 lg:mb-0 items-center pb-6 ">
                 <img
                   src={bounty.image}
@@ -140,58 +141,7 @@ const BountyVote = () => {
                 </div>
               </div>
               <div className="border-r border-gray-900" />
-              <div className="grid grid-cols-4 gap-x-20 relative ml-5">
-                <div>
-                  <div
-                    className="radial-progress text-primary"
-                    // style={
-                    //   (
-                    //     Math.round(fakePercentage['--value'] * 100) / 100
-                    //   ).toFixed(2) === 'NaN'
-                    //     ? defaultValue
-                    //     : fakePercentage
-                    // }
-                  >
-                    {/* {(
-                      Math.round(fakePercentage['--value'] * 100) / 100
-                    ).toFixed(2)} */}
-                    %
-                  </div>
-                  <p className="text-center">Fake</p>
-                </div>
-                <div>
-                  <div
-                    className="radial-progress text-primary"
-                    // style={
-                    //   (
-                    //     Math.round(realPercentage['--value'] * 100) / 100
-                    //   ).toFixed(2) === 'NaN'
-                    //     ? defaultValue
-                    //     : realPercentage
-                    // }
-                  >
-                    {/* {(
-                      Math.round(realPercentage['--value'] * 100) / 100
-                    ).toFixed(2)} */}
-                    %
-                  </div>
-                  <p className="text-center bold">Real</p>
-                </div>
-
-                <div className="mt-5">
-                  <p>Total Votes</p>
-                  <p className="text-center">
-                    {/* {post.negativeVote + post.positiveVote} */}
-                  </p>
-                </div>
-                <label
-                  htmlFor="my-modal-3"
-                  className="btn modal-button mt-5"
-                  onClick={() => setBountyId(bounty.id)}
-                >
-                  Vote
-                </label>
-              </div>
+              <VotingBountyProgress setBountyId={setBountyId} id={bounty.id} />
             </div>
           );
         })}
@@ -202,3 +152,61 @@ const BountyVote = () => {
 };
 
 export default BountyVote;
+
+
+
+
+
+
+// {/* <div className="grid grid-cols-4 gap-x-20 relative ml-5">
+//   <div>
+//     <div
+//       className="radial-progress text-primary"
+//       // style={
+//       //   (
+//       //     Math.round(fakePercentage['--value'] * 100) / 100
+//       //   ).toFixed(2) === 'NaN'
+//       //     ? defaultValue
+//       //     : fakePercentage
+//       // }
+//     >
+//       {/* {(
+//                       Math.round(fakePercentage['--value'] * 100) / 100
+//                     ).toFixed(2)} */}
+//       %
+//     </div>
+//     <p className="text-center">Fake</p>
+//   </div>
+//   <div>
+//     <div
+//       className="radial-progress text-primary"
+//       // style={
+//       //   (
+//       //     Math.round(realPercentage['--value'] * 100) / 100
+//       //   ).toFixed(2) === 'NaN'
+//       //     ? defaultValue
+//       //     : realPercentage
+//       // }
+//     >
+//       {/* {(
+//                       Math.round(realPercentage['--value'] * 100) / 100
+//                     ).toFixed(2)} */}
+//       %
+//     </div>
+//     <p className="text-center bold">Real</p>
+//   </div>
+
+//   <div className="mt-5">
+//     <p>Total Votes</p>
+//     <p className="text-center">
+//       {/* {post.negativeVote + post.positiveVote} */}
+//     </p>
+//   </div>
+//   <label
+//     htmlFor="my-modal-3"
+//     className="btn modal-button mt-5"
+//     onClick={() => setBountyId(bounty.id)}
+//   >
+//     Vote
+//   </label>
+// </div>; */}

@@ -32,8 +32,8 @@ const typeDefs = gql`
   type BountyVote {
     positiveVote: Int
     negativeVote: Int
-    userId: ID!
-    bountyId: ID!
+    userId: ID
+    bountyId: ID
   }
   type NewsSource {
     id: ID!
