@@ -79,6 +79,7 @@ export const CREATE_BOUNTY_MUTATION = gql`
       category
       userId
       newssourceId
+      fakeorreal
     }
   }
 `;

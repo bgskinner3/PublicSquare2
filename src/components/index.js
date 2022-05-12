@@ -10,8 +10,10 @@ import CreateBounty from "./CreateBounty";
 import Bounties from "./Bounties";
 import PageNotFound from "./PageNotFound";
 import SingleBounty from "./SingleBounty";
-import ChatMain from "@mui/icons-material/Forum";
+import ForumMain from "./ForumMain";
 import VoteMain from "./VoteMain";
+import BountyVote from "./BountyVote";
+
 
 export {
   Home,
@@ -26,6 +28,7 @@ export {
   Bounties,
   PageNotFound,
   SingleBounty,
-  ChatMain,
-  VoteMain
+  ForumMain,
+  VoteMain,
+  BountyVote
 }

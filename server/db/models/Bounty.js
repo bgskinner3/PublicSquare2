@@ -33,7 +33,7 @@ const Bounty = db.define('bounty', {
     type: Sequelize.STRING,
   },
   fakeorreal: {
-    type: Sequelize.ENUM('real', 'fake', 'pending'),
+    type: Sequelize.ENUM('real', 'fake', 'pending')
   },
   positiveVote: {
     type: Sequelize.INTEGER,

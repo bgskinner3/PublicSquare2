@@ -16,7 +16,9 @@ import {
   Bounties,
   PageNotFound,
   SingleBounty,
-  ChatMain
+  ForumMain,
+  VoteMain,
+  BountyVote
 } from './components';
 
 const Routing = () => {
@@ -30,8 +32,10 @@ const Routing = () => {
           <Route exact path="/account" element={<Account />} />
           <Route exact path="/addsource" element={<AddNewsSource />} />
           <Route exact path="/create" element={<CreateBounty />} />
-          <Route exact path="/chatmain" element={<ChatMain />} />
+          <Route exact path="/forum" element={<ForumMain />} />
           <Route exact path="/bounties" element={<Bounties />} />
+          <Route exact path="/votemain" element={<VoteMain />} />
+          <Route exact path="/votemain/bounty" element={<BountyVote />} />
           <Route exact path="/bounties/:id" element={<SingleBounty />} />
           <Route path="*" element={<PageNotFound />} />
         </Routes>

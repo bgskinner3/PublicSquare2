@@ -9,7 +9,8 @@ import ForumIcon from '@mui/icons-material/Forum';
 const Bounties = () => {
   const { data, loading } = useQuery(GET_ALL_BOUNTIES);
   const navigate = useNavigate()
-  console.log(data);
+  
+
   return loading ? (
     <Loading />
   ) : (
@@ -47,7 +48,7 @@ const Bounties = () => {
                   const dateTimeAfterThreeDays =
                     currentTime + threeDayExperation;
                   return (
-                    <tr className="bg-white border-b dark:bg-primary-content dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                    <tr key={bounty.id} className="bg-white border-b dark:bg-primary-content dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                       <td className="w-4 p-4">
                         <div className="flex items-center">
                           <input
@@ -55,7 +56,7 @@ const Bounties = () => {
                             type="checkbox"
                             className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                           />
-                          <label for="checkbox-table-1" className="sr-only">
+                          <label htmlFor="checkbox-table-1" className="sr-only">
                             checkbox
                           </label>
                         </div>
@@ -103,7 +104,7 @@ const Bounties = () => {
                         <div className="text-center">
                           <div
                             className="btn btn-outline font-medium text-neutral-content hover:underline"
-                            onClick={() => navigate('/chatmain')}
+                            onClick={() => navigate('/forum')}
                           >
                             <ForumIcon />
                           </div>

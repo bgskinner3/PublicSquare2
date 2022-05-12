@@ -91,6 +91,7 @@ const typeDefs = gql`
     userId: ID!
     newssourceId: ID!
     category: Category!
+    fakeorreal: FakeOrReal
   }
   input createNewsSourceInput {
     image: String
@@ -115,12 +116,12 @@ const typeDefs = gql`
     createNewsSource(input: createNewsSourceInput!): NewsSource
     deleteNewsSource(id: ID!): NewsSource
     uploadFile(file: Upload!): File!
-    createVote(input: createBountyVoteInput!): BountyVote
+    createBountyVote(input: createBountyVoteInput!): BountyVote
   }
   enum FakeOrReal {
     fake
     real
-    processing
+    pending
   }
   enum Category {
     health

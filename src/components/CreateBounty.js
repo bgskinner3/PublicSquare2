@@ -24,8 +24,8 @@ const CreateBounty = () => {
   const [reward, setReward] = useState(0);
   const [category, setCategory] = useState('Category');
   const [vaildLinks, setValidLinks] = useState([]);
+  const [currentSources, setCurrentSources] = useState([])
   const { data, loading } = useQuery(GET_ALL_NEWS_SOURCES);
- 
   const [createBounty] = useMutation(CREATE_BOUNTY_MUTATION);
   const navigate = useNavigate()
   const authToken = localStorage.getItem(jwtAuth);
@@ -36,6 +36,7 @@ const CreateBounty = () => {
 
   useEffect(() => {
     getSourceFromLink();
+   
   }, [link, data]);
 
   const getSourceFromLink = () => {
@@ -45,11 +46,14 @@ const CreateBounty = () => {
         let start;
         let end;
         data.newssources.forEach((source) => {
-          start = source.pagelink.indexOf('.') + 1;
+          start = source.pagelink.indexOf('w');
+
           const first = source.pagelink.slice(start);
-          end = first.indexOf('.com');
+          end = first.indexOf('.com') 
+          
           if (source.pagelink) {
-            linkArr.push({ compare: first.slice(0, end), ...source });
+            
+            linkArr.push({ compare: first.slice(0, end) + '.com', ...source });
           }
         });
       }
@@ -59,15 +63,15 @@ const CreateBounty = () => {
     }
   };
 
-  const vaildateInput = () => {
+ 
+  
 
-  }
 
 
   const handleSubmit = async () => {
     try {
       
-      const { data } = await createBounty({
+      await createBounty({
         variables: {
           input: {
             description: description,
@@ -78,14 +82,16 @@ const CreateBounty = () => {
             newssourceId: image.id,
             image: image.image,
             category: category,
+            fakeorreal: 'pending'
           },
         },
       });
-      if(data) {
-        toast.success('Your Bounty Has Been Made');
-      }
+  
     } catch (error) {
       console.error(error);
+    } finally {
+      toast.success('Your Bounty Has Been Made');
+      navigate('/bounties')
     }
   };
 
@@ -98,6 +104,7 @@ const CreateBounty = () => {
         link={link}
         vaildLinks={vaildLinks}
         setImage={setImage}
+        currentSources={data}
       />
       <div className="p-5 ml-10 border-4 bg-primary-content rounded-3xl border-neutral-content  shadow-2xl shadow-black w-96 h-screen inset-y-0 left-0 bg-white">
         <div className="grid gap-10 justify-center">

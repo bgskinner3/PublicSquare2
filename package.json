@@ -55,7 +55,7 @@
     "eject": "react-scripts eject",
     "seed": "node seed.js",
     "start:server": "node server",
-    "start:dev": "npm run start & node server"
+    "start:dev": "kill -9 $(lsof -ti:3000,3001) & npm run start & node server"
   },
   "eslintConfig": {
     "extends": [

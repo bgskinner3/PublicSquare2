@@ -46,7 +46,8 @@ const AddNewsSource = () => {
       dataupload: e.target.files[0],
     });
     const file = e.target.files[0];
-    if (file) {
+    if(file) {
+      
       await uploadFile({ variables: { file } });
     }
   };
@@ -63,7 +64,7 @@ const AddNewsSource = () => {
             },
           },
         });
-      } else if(!isValidUrl(pageLink)) {
+      } else if (!isValidUrl(pageLink)) {
         toast.warning('Please enter a vaild link');
       }
     } catch (error) {

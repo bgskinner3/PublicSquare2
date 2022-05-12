@@ -13,7 +13,7 @@ const CreateBountyModal = (props) => {
   const navigate = useNavigate();
   const cancelButtonRef = useRef(null);
   const { data, loading } = useQuery(GET_ALL_BOUNTIES);
-  const { setLink, link, vaildLinks, setImage } = props;
+  const { setLink, link, vaildLinks, setImage, currentSources } = props;
 
   //used to check if the entered link is an actual url link
   const isValidUrl = (_string) => {
@@ -35,44 +35,48 @@ const CreateBountyModal = (props) => {
     let pass = false;
 
     if (free) {
-      start = link.indexOf('.') + 1;
+      start = link.indexOf('w');
       name = link.slice(start);
       end = name.indexOf('.com');
-      name = name.slice(0, end);
+      name = name.slice(0, end) + '.com';
     }
 
     vaildLinks.map((org) => {
       if (name === org.compare) {
         setImage({
           image: org.image,
-          id: org.id
+          id: org.id,
         });
         pass = true;
       }
     });
     return pass;
   };
-
+  console.log('here', data);
   //on click checks the availabilty of the link, that is if it is already posted and in use
   const checkAvailability = async () => {
+    let pass = true;
     try {
-      if (!isValidUrl(link)) {
-        toast.warning('Please enter a vaild link');
-      } else {
+      if (isValidUrl(link)) {
         if (data) {
           data.bounties.map((bounty) => {
             if (bounty.link === link) {
               toast.warning('This Bounty Already exists');
-              setFree(false);
+              pass = false;
             }
           });
         }
-        if (fillWIthCurrentSource(link)) {
+        if (!fillWIthCurrentSource(link)) {
+          toast.warning(
+            'We are not currently making bounties on this news organization'
+          );
+        }
+        if (pass) {
           toast.success('Available!');
           setOpen(false);
-        } else {
-          toast.warning('Please enter a vaild link');
         }
+      } else {
+        toast.warning('Please enter a vaild link');
       }
     } catch (error) {
       console.error('error occured while verifying link', error);
@@ -150,6 +154,23 @@ const CreateBountyModal = (props) => {
                       </div>
                     </div>
                   </div>
+                  <p className="text-center pt-10">
+                    Current News Organizations
+                  </p>
+                  <div className="flex flex-no-wrap w-full gap-4 pt-5 overflow-x-scroll scrollbar-hide  scrolling-touch items-start mb-8">
+                    {currentSources.newssources.map((source) => {
+                      console.log(source);
+                      return (
+                        <div key={source.id}>
+                          <div className="avatar">
+                            <div className="w-24">
+                              <img src={source.image} alt="" />
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
                 <div className="bg-base-300 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
                   <div className="w-full relative">
@@ -170,7 +191,7 @@ const CreateBountyModal = (props) => {
                     <button
                       className="btn btn-outline w-full mt-5 mb-5"
                       type="button"
-                      onClick={(link) => checkAvailability(link)}
+                      onClick={() => checkAvailability()}
                     >
                       Submit
                     </button>

@@ -162,7 +162,7 @@ const NavBar = () => {
                     data-mdb-ripple="true"
                     data-mdb-ripple-color="dark"
                     onClick={() => {
-                      navigate(`/bounties`);
+                      navigate(`/votemain`);
                     }}
                   >
                     <div>

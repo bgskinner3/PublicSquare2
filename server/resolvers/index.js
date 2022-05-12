@@ -257,7 +257,7 @@ const resolvers = {
         url: `http://localhost:4000/newsImages/${randomName}`,
       };
     },
-    createVote: async (parent, args) => {
+    createBountyVote: async (parent, args) => {
       try {
       
         const {
