@@ -2,19 +2,22 @@ import React, { useState, useEffect } from 'react';
 import { GET_ALL_BOUNTIES, GET_SINGLE_USER } from '../graphql/queries';
 import { useQuery, useMutation } from '@apollo/client';
 import { Loading } from '.';
-import {CREATE_BOUNTY_VOTE_MUTATION} from '../graphql/mutations'
+import { CREATE_BOUNTY_VOTE_MUTATION } from '../graphql/mutations';
 import VotingBountyProgress from './VotingBountyProgress';
+import { toast } from 'react-toastify';
 const jwtAuth = process.env.REACT_APP_JWT_SECRET;
 
 const BountyVote = () => {
   const [activeBounties, setActiveBounties] = useState([]);
+  const [userVoted, setUserVoted] = useState([]);
   const [bountyId, setBountyId] = useState('');
   const { data, loading, refetch } = useQuery(GET_ALL_BOUNTIES);
   const authToken = localStorage.getItem(jwtAuth);
-  const { data: user} = useQuery(GET_SINGLE_USER, {
+  const { data: user } = useQuery(GET_SINGLE_USER, {
     variables: { token: authToken },
   });
-  const [createBountyVote] = useMutation(CREATE_BOUNTY_VOTE_MUTATION)
+
+  const [createBountyVote] = useMutation(CREATE_BOUNTY_VOTE_MUTATION);
 
   useEffect(() => {
     getAllActive();
@@ -36,34 +39,25 @@ const BountyVote = () => {
     }
   };
 
-  const getUserVotedOn = () => {
-    
-  }
-
-
-
   const handleVote = async (voting) => {
     try {
-      
       const { positive, negative } = voting;
-     const { data } = await createBountyVote({
-       variables: {
-         input: {
-           bountyId: bountyId,
-           positiveVote: positive,
-           negativeVote: negative,
-           userId: user.user.id,
-         },
-       },
-     });
-
-      console.log('this data' , data)
-      
+      const { data } = await createBountyVote({
+        variables: {
+          input: {
+            bountyId: bountyId,
+            positiveVote: positive,
+            negativeVote: negative,
+            userId: user.user.id,
+          },
+        },
+      });
+      console.log(data);
     } catch (error) {
-      console.error(error)
+      toast.error('You Have Already Voted On This');
+      console.error('already', error);
     }
-
-  }
+  };
 
   return loading ? (
     <Loading />
@@ -141,72 +135,22 @@ const BountyVote = () => {
                 </div>
               </div>
               <div className="border-r border-gray-900" />
-              <VotingBountyProgress setBountyId={setBountyId} id={bounty.id} />
+              <div className="grid grid-cols-2 gap-x-20 relative ml-5">
+                <VotingBountyProgress id={bounty.id} />
+                <label
+                  htmlFor="my-modal-3"
+                  className="btn modal-button mt-5"
+                  onClick={() => setBountyId(bounty.id)}
+                >
+                  Vote
+                </label>
+              </div>
             </div>
           );
         })}
-        
       </div>
     </div>
   );
 };
 
 export default BountyVote;
-
-
-
-
-
-
-// {/* <div className="grid grid-cols-4 gap-x-20 relative ml-5">
-//   <div>
-//     <div
-//       className="radial-progress text-primary"
-//       // style={
-//       //   (
-//       //     Math.round(fakePercentage['--value'] * 100) / 100
-//       //   ).toFixed(2) === 'NaN'
-//       //     ? defaultValue
-//       //     : fakePercentage
-//       // }
-//     >
-//       {/* {(
-//                       Math.round(fakePercentage['--value'] * 100) / 100
-//                     ).toFixed(2)} */}
-//       %
-//     </div>
-//     <p className="text-center">Fake</p>
-//   </div>
-//   <div>
-//     <div
-//       className="radial-progress text-primary"
-//       // style={
-//       //   (
-//       //     Math.round(realPercentage['--value'] * 100) / 100
-//       //   ).toFixed(2) === 'NaN'
-//       //     ? defaultValue
-//       //     : realPercentage
-//       // }
-//     >
-//       {/* {(
-//                       Math.round(realPercentage['--value'] * 100) / 100
-//                     ).toFixed(2)} */}
-//       %
-//     </div>
-//     <p className="text-center bold">Real</p>
-//   </div>
-
-//   <div className="mt-5">
-//     <p>Total Votes</p>
-//     <p className="text-center">
-//       {/* {post.negativeVote + post.positiveVote} */}
-//     </p>
-//   </div>
-//   <label
-//     htmlFor="my-modal-3"
-//     className="btn modal-button mt-5"
-//     onClick={() => setBountyId(bounty.id)}
-//   >
-//     Vote
-//   </label>
-// </div>; */}

@@ -6,10 +6,6 @@ const Message = db.define('message', {
     type: Sequelize.STRING,
     allowNull: false,
   },
-  currentChatReceiverId: {
-    type: Sequelize.INTEGER,
-    allowNull: false,
-  },
 });
 
 module.exports = { Message };

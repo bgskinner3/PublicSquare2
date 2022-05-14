@@ -14,4 +14,5 @@ const BountyVote = db.define('bountyvote', {
   },
 });
 
+
 module.exports = { BountyVote };

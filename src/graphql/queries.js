@@ -79,8 +79,8 @@ export const GET_ALL_BOUNTIES = gql`
 `;
 
 export const GET_SINGLE_BOUNTY = gql`
-  query GetSingleBounty($postId: ID!) {
-    bounty(id: $postId) {
+  query GetSingleBounty($bountyId: ID!) {
+    bounty(bountyId: $bountyId) {
       description
       title
       id
@@ -111,7 +111,7 @@ export const GET_ALL_BOUNTY_VOTES = gql`
 
 export const GET_USER_BOUNTY_VOTES = gql`
   query ($userId: ID!) {
-    userbountyvotes(id: $userId) {
+    userbountyvotes(userId: $userId) {
       userId
       bountyId
       negativeVote

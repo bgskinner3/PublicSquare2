@@ -12,9 +12,9 @@ async function seed() {
       username: 'Admin',
       password: process.env.REACT_APP_ADMIN_PASSWORD,
       admin: true,
-      wallet: 100000
+      wallet: 100000,
     });
-    
+  
   } catch (error) {
     console.error('syncing dummy data did not work', error);
   }

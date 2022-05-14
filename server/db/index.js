@@ -8,17 +8,20 @@ const { NewsSource } = require('./models/NewsSource');
 const { BountyVote  } = require('./models/BountyVote');
 
 
+
 User.hasMany(Bounty);
 Bounty.belongsTo(User);
 
 User.hasMany(BountyVote)
 BountyVote.belongsTo(User)
 
-Bounty.hasMany(BountyVote)
-BountyVote.belongsTo(Bounty)
+
 
 NewsSource.hasMany(Bounty);
 Bounty.belongsTo(NewsSource);
+
+Bounty.hasMany(Conversation);
+Conversation.belongsTo(Bounty);
 
 //message system below simple version
 User.hasMany(UserToConversation);

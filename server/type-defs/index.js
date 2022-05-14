@@ -6,6 +6,23 @@ const typeDefs = gql`
   type File {
     url: String!
   }
+  type Conversation {
+    id: ID!
+    users: String
+    bountyId: ID
+  }
+  type UserToConversation {
+    id: ID!
+    conversationId: ID
+    userId: ID
+  }
+  type Messages {
+    id: ID
+    content: String
+    currentChatReceiverId: Int
+    conversationId: ID
+    userId: ID
+  }
   type Bounty {
     id: ID!
     title: String!
@@ -42,17 +59,20 @@ const typeDefs = gql`
     rating: Int
     pagelink: String
   }
+
   type Query {
     users: [User!]!
     user(token: String!): User!
     bounties: [Bounty!]!
-    bounty(id: ID!): Bounty!
+    bounty(bountyId: ID!): Bounty!
     newssources: [NewsSource!]!
     newssource(id: ID!): NewsSource
     bountyvotes: [BountyVote!]!
     bountyvote(id: ID!): BountyVote!
     userbountyvotes(userId: ID!): [BountyVote!]
     singlebountyvotes(bountyId: ID!): [BountyVote!]
+    bountyConversation(bountyId: ID!): Conversation
+    conversationMessages(conversationId: ID!): [Messages]
   }
   input UserInput {
     username: String!
@@ -105,6 +125,16 @@ const typeDefs = gql`
     positiveVote: Int
     negativeVote: Int
   }
+  input updateConversationInput {
+    conversationId: ID!
+    userId: ID!
+    bountyId: ID!
+  }
+  input createMessageInput {
+    content: String
+    conversationId: ID
+    userId: ID
+  }
   type Mutation {
     login(username: String!, password: String!): AuthPayload!
     signup(username: String!, password: String!): AuthPayload!
@@ -118,6 +148,8 @@ const typeDefs = gql`
     deleteNewsSource(id: ID!): NewsSource
     uploadFile(file: Upload!): File!
     createBountyVote(input: createBountyVoteInput!): BountyVote
+    addUserToConversation(input: updateConversationInput!): Conversation
+    createMessage(input: createMessageInput): Message
   }
   enum FakeOrReal {
     fake

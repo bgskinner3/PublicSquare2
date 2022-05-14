@@ -1,8 +1,10 @@
-const {User} = require('../db/models/User')
-const {Bounty} = require('../db/models/Bounty')
+const { User } = require('../db/models/User');
+const { Bounty } = require('../db/models/Bounty');
 const { NewsSource } = require('../db/models/NewsSource');
-const {BountyVote} = require('../db/models/BountyVote')
-
+const { BountyVote } = require('../db/models/BountyVote');
+const { Conversation } = require('../db/models/Conversation');
+const { UserToConversation } = require('../db/models/UserToConversation');
+const { Message } = require('../db/models/Message');
 const { GraphQLUpload } = require('graphql-upload');
 const { GraphQLScalarType, Kind } = require('graphql');
 const jwt = require('jsonwebtoken');
@@ -23,7 +25,6 @@ const generateRandomString = (length) => {
   return result;
 };
 
-
 const dateScalar = new GraphQLScalarType({
   name: 'Date',
   description: 'Date custom scalar type',
@@ -40,7 +41,6 @@ const dateScalar = new GraphQLScalarType({
     return null; // Invalid hard-coded value (not an integer)
   },
 });
-
 
 const resolvers = {
   Query: {
@@ -60,8 +60,8 @@ const resolvers = {
       return posts;
     },
     bounty: async (parent, args) => {
-      const id = args.id;
-      const post = await Bounty.findByPk(id);
+      const { bountyId } = args;
+      const post = await Bounty.findByPk(bountyId);
       return post;
     },
     newssources: async (parent, args) => {
@@ -87,15 +87,29 @@ const resolvers = {
       return userVotes;
     },
     singlebountyvotes: async (parent, args) => {
-      console.log('args', args)
-      const {bountyId} = args
+      const { bountyId } = args;
       const bountyVotes = await BountyVote.findAll({
         where: {
-          bountyId: bountyId
-        }
-      })
-      return bountyVotes
-    }
+          bountyId: bountyId,
+        },
+      });
+      return bountyVotes;
+    },
+    bountyConversation: async (parent, args) => {
+      const { bountyId } = args;
+      const conversation = await Conversation.findOne({
+        where: {
+          bountyId: bountyId,
+        },
+      });
+
+      const id = conversation.id
+
+      
+
+
+      return conversation
+    },
   },
   Upload: GraphQLUpload,
   Date: dateScalar,
@@ -144,7 +158,7 @@ const resolvers = {
           { id: user.id, username: user.username },
           process.env.REACT_APP_JWT_SECRET,
           {
-            expiresIn: '1h',
+            expiresIn: '6h',
           }
         );
 
@@ -181,16 +195,21 @@ const resolvers = {
     },
     createBounty: async (parent, args, context) => {
       try {
-        const existingPost = await Bounty.findOne({
+        const existingBounty = await Bounty.findOne({
           where: {
             link: args.input.link,
           },
         });
-        if (existingPost) {
+        if (existingBounty) {
           throw new Error('That post has already been made');
         }
-        const post = await Bounty.create({ ...args.input });
-        return post;
+        const bounty = await Bounty.create({ ...args.input });
+
+        await Conversation.create({
+          bountyId: bounty.dataValues.id,
+        });
+
+        return bounty;
       } catch (error) {
         console.error(error);
       }
@@ -278,7 +297,7 @@ const resolvers = {
         });
 
         if (exisitngUserVote) {
-          throw new Error(' You have already voted on this');
+          return new Error(' You have already voted on this');
         }
         const vote = await BountyVote.create({
           userId: userId,
@@ -291,6 +310,50 @@ const resolvers = {
       } catch (error) {
         console.error('vote did not go through', error);
       }
+    },
+    addUserToConversation: async (parent, args) => {
+      try {
+        let add = true;
+        const { userId, conversationId, bountyId } = args.input;
+
+        const conversation = await Conversation.findOne({
+          where: {
+            bountyId: bountyId,
+          },
+        });
+
+        const search = conversation.users.split(' ');
+        search.map((user) => {
+          if (user === userId) {
+            add = false;
+          }
+        });
+        console.log('ids', conversationId, userId);
+        if (add) {
+          UserToConversation.create({
+            ...args.input,
+          });
+
+          search.push(userId);
+
+          conversation.set({
+            users: search.join(' '),
+          });
+
+          await conversation.save();
+        }
+        return conversation;
+      } catch (error) {
+        console.error(
+          'something happened when adding user to conversation',
+          error
+        );
+      }
+    },
+    createMessage: async (parent, args) => {
+      const { content, conversationId, userId } = args.input;
+      const message = Message.create({ ...args.input });
+      return message;
     },
   },
 };

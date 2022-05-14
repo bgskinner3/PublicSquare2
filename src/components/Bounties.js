@@ -1,15 +1,65 @@
-import React from 'react';
-import { GET_ALL_BOUNTIES } from '../graphql/queries';
-import { useQuery } from '@apollo/client';
+import React, {useState, useEffect} from 'react';
+import { GET_ALL_BOUNTIES, GET_SINGLE_BOUNTY_VOTES } from '../graphql/queries';
+import {UPDATE_BOUNTY_MUTATION} from '../graphql/mutations'
+import { useQuery, useMutation } from '@apollo/client';
 import { Loading } from '.';
 import { useNavigate } from 'react-router-dom';
 import CountDown from './CountDown';
 import ForumIcon from '@mui/icons-material/Forum';
+import BallotIcon from '@mui/icons-material/Ballot';
+import ThumbUpIcon from '@mui/icons-material/ThumbUp';
+import ThumbDownIcon from '@mui/icons-material/ThumbDown';
+import { useOrderBounties } from '../hooks/useOrderBounties';
+import VotingBountyProgress from './VotingBountyProgress';
+
 
 const Bounties = () => {
-  const { data, loading } = useQuery(GET_ALL_BOUNTIES);
+  const { data, loading, refetch } = useQuery(GET_ALL_BOUNTIES);
+  const [updateInfo, setUpdateInfo] = useState({
+    id: 0,
+    positive: 0,
+    negative: 0,
+    info: false
+  })
   const navigate = useNavigate()
-  
+  const [updateBounty] = useMutation(UPDATE_BOUNTY_MUTATION);
+
+// const [orderedBouinties] = useOrderBounties(data);
+
+  useEffect(() => {
+    handleUpandDownVote();
+  }, [updateInfo]);
+
+  const handleUpandDownVote = async () => {
+    try {
+      if(updateInfo.info) {
+       const { data } = await updateBounty({
+        variables: {
+          input: {
+            id: updateInfo.id,
+            newpositiveVote: updateInfo.positive,
+            newnegativeVote: updateInfo.negative,
+          },
+        },
+      });
+      refetch();
+      if(data) {
+        await reset()
+      }
+    }
+    } catch (error) {
+      console.error(error)
+    } 
+  }
+
+  const reset = () => {
+      setUpdateInfo({
+        id: 0,
+        positive: 0,
+        negative: 0,
+        info: false,
+      });
+  }
 
   return loading ? (
     <Loading />
@@ -27,11 +77,9 @@ const Bounties = () => {
                 News Source
               </th>
               <th scope="col" className="px-6 py-3">
-                Total Votes
+                Reward
               </th>
-              <th scope="col" className="px-6 py-3">
-                Admissions
-              </th>
+
               <th scope="col" className="px-28 py-5">
                 Expire
               </th>
@@ -48,18 +96,44 @@ const Bounties = () => {
                   const dateTimeAfterThreeDays =
                     currentTime + threeDayExperation;
                   return (
-                    <tr key={bounty.id} className="bg-white border-b dark:bg-primary-content dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                      <td className="w-4 p-4">
-                        <div className="flex items-center">
-                          <input
-                            id="checkbox-table-1"
-                            type="checkbox"
-                            className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                          />
-                          <label htmlFor="checkbox-table-1" className="sr-only">
-                            checkbox
-                          </label>
+                    <tr
+                      key={bounty.id}
+                      className="bg-white border-b dark:bg-primary-content dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+                    >
+                      <td className="px-6 py-4 text-neutral-content flex justify-between">
+                        <VotingBountyProgress id={bounty.id} />
+                        {/* <div className="text-center">
+                          <div
+                            className="btn btn-outline font-medium text-neutral-content hover:underline"
+                            onClick={() =>
+                              setUpdateInfo({
+                                id: bounty.id,
+                                positive: 0,
+                                negative: 1,
+                                info: true,
+                              })
+                            }
+                          >
+                            <ThumbDownIcon />
+                          </div>
+                          <p className="text-sm ">Move Down</p>
                         </div>
+                        <div className="text-center">
+                          <div
+                            className="btn btn-outline font-medium text-neutral-content hover:underline"
+                            onClick={() =>
+                              setUpdateInfo({
+                                id: bounty.id,
+                                positive: 1,
+                                negative: 0,
+                                info: true,
+                              })
+                            }
+                          >
+                            <ThumbUpIcon />
+                          </div>
+                          <p className="text-sm ">Move Up</p>
+                        </div> */}
                       </td>
                       <th
                         scope="row"
@@ -86,13 +160,7 @@ const Bounties = () => {
                         className="px-6 py-4 text-neutral-content"
                         onClick={() => navigate(`/bounties/${bounty.id}`)}
                       >
-                        Votes
-                      </td>
-                      <td
-                        className="px-6 py-4 text-neutral-content"
-                        onClick={() => navigate(`/bounties/${bounty.id}`)}
-                      >
-                        Admissions
+                        <p>{bounty.reward} ETH</p>
                       </td>
                       <td
                         className="px-6 py-4 text-neutral-content"
@@ -100,7 +168,7 @@ const Bounties = () => {
                       >
                         <CountDown targetDate={dateTimeAfterThreeDays} />
                       </td>
-                      <td className="px-6 py-4 text-neutral-content absolute">
+                      <td className="px-6 py-4 text-neutral-content flex justify-between">
                         <div className="text-center">
                           <div
                             className="btn btn-outline font-medium text-neutral-content hover:underline"
@@ -109,6 +177,15 @@ const Bounties = () => {
                             <ForumIcon />
                           </div>
                           <p className="text-sm ">discuss</p>
+                        </div>
+                        <div className="text-center">
+                          <div
+                            className="btn btn-outline font-medium text-neutral-content hover:underline"
+                            onClick={() => navigate('/votemain/bounty')}
+                          >
+                            <BallotIcon />
+                          </div>
+                          <p className="text-sm ">Vote</p>
                         </div>
                       </td>
                     </tr>

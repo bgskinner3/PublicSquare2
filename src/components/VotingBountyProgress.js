@@ -4,7 +4,7 @@ import { useQuery } from '@apollo/client';
 import { Loading } from '.';
 
 const VotingBountyProgress = (props) => {
-  const { setBountyId, id } = props;
+  const { id } = props;
   const [realPercentage, setRealPercentage] = useState({
     '--value': 0
   })
@@ -72,7 +72,7 @@ const VotingBountyProgress = (props) => {
   return loading ? (
     <Loading />
   ) : (
-    <div className="grid grid-cols-4 gap-x-20 relative ml-5">
+    <div className="grid grid-cols-3 gap-x-20 relative ml-5">
       <div>
         <div
           className="radial-progress text-primary"
@@ -106,13 +106,6 @@ const VotingBountyProgress = (props) => {
         <p>Total Votes</p>
         <p className="text-center">{totalVotes}</p>
       </div>
-      <label
-        htmlFor="my-modal-3"
-        className="btn modal-button mt-5"
-        onClick={(() => setBountyId(id))}
-      >
-        Vote
-      </label>
     </div>
   );
 };
