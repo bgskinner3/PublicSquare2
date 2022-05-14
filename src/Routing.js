@@ -18,7 +18,8 @@ import {
   SingleBounty,
   ForumMain,
   VoteMain,
-  BountyVote
+  BountyVote,
+  BountyForum
 } from './components';
 
 const Routing = () => {
@@ -33,6 +34,7 @@ const Routing = () => {
           <Route exact path="/addsource" element={<AddNewsSource />} />
           <Route exact path="/create" element={<CreateBounty />} />
           <Route exact path="/forum" element={<ForumMain />} />
+          <Route exact path="/forum/:id" element={<BountyForum />} />
           <Route exact path="/bounties" element={<Bounties />} />
           <Route exact path="/votemain" element={<VoteMain />} />
           <Route exact path="/votemain/bounty" element={<BountyVote />} />

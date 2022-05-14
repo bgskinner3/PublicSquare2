@@ -25,10 +25,12 @@ const Login = () => {
         },
       });
       const {
-        login: { token },
+        login: { token, user },
       } = data;
 
       localStorage.setItem(jwtAuth, token);
+      localStorage.setItem('userID', user.id);
+      
       navigate('/');
     } catch (error) {
       console.error('login error', error);

@@ -11,6 +11,8 @@ const jwt = require('jsonwebtoken');
 const path = require('path');
 const fs = require('fs');
 const bcrypt = require('bcrypt');
+// const { PubSub } = require('graphql-subscriptions');
+const { RedisPubSub } = require('graphql-redis-subscriptions')
 
 //here we are providing more security for users added images.
 //sometimes the file can be something private.
@@ -41,6 +43,10 @@ const dateScalar = new GraphQLScalarType({
     return null; // Invalid hard-coded value (not an integer)
   },
 });
+
+//for subscriptions
+const pubsub = new RedisPubSub();
+const MESSAGE_ADDED = 'MESSAGE_ADDED';
 
 const resolvers = {
   Query: {
@@ -105,7 +111,7 @@ const resolvers = {
       return conversation;
     },
     conversationMessages: async (parent, args) => {
-      const {conversationId} = args
+      const { conversationId } = args;
 
       const allMessages = await Message.findAll({
         where: {
@@ -113,7 +119,7 @@ const resolvers = {
         },
       });
       return allMessages;
-    }
+    },
   },
   Upload: GraphQLUpload,
   Date: dateScalar,
@@ -358,11 +364,12 @@ const resolvers = {
     },
     createMessage: async (parent, args) => {
       try {
+        console.log('in server message', args);
         let add = true;
-        const { content, conversationId, userId, bountyId } = args.input;
+        const { content, conversationId, userId } = args.input;
         const conversation = await Conversation.findOne({
           where: {
-            bountyId: bountyId,
+            id: conversationId,
           },
         });
         const search = conversation.users.split(' ');
@@ -374,7 +381,8 @@ const resolvers = {
 
         if (add) {
           UserToConversation.create({
-            ...args.input,
+            userId: userId,
+            conversationId: conversationId,
           });
 
           search.push(userId);
@@ -390,6 +398,23 @@ const resolvers = {
       } catch (error) {
         console.error('error with message', error);
       }
+    },
+    addNewMessage: async (parent, args) => {
+      
+       const message = await Message.create({ ...args.input })
+
+      await pubsub.publish(MESSAGE_ADDED, {newMessage: message});
+      return message
+    }
+  },
+  Subscription: {
+    newMessage: {
+      // resolve: (payload) => {
+      //   return payload.messageCreated;
+      // },
+      subscribe: () => {
+        return pubsub.asyncIterator([MESSAGE_ADDED]);
+      },
     },
   },
 };

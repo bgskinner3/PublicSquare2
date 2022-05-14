@@ -172,7 +172,7 @@ const Bounties = () => {
                         <div className="text-center">
                           <div
                             className="btn btn-outline font-medium text-neutral-content hover:underline"
-                            onClick={() => navigate('/forum')}
+                            onClick={() => navigate(`/forum/${bounty.id}`)}
                           >
                             <ForumIcon />
                           </div>

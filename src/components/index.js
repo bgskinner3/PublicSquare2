@@ -13,6 +13,8 @@ import SingleBounty from "./SingleBounty";
 import ForumMain from "./ForumMain";
 import VoteMain from "./VoteMain";
 import BountyVote from "./BountyVote";
+import BountyForum from "./BountyForum";
+import CreateMain from "./CreateMain";
 
 
 export {
@@ -23,12 +25,14 @@ export {
   Footer,
   Account,
   AddNewsSource,
-  Loading, 
+  Loading,
   CreateBounty,
   Bounties,
   PageNotFound,
   SingleBounty,
   ForumMain,
   VoteMain,
-  BountyVote
-}
+  BountyVote,
+  BountyForum,
+  CreateMain
+};

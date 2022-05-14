@@ -24,8 +24,9 @@ const Signup = () => {
         },
       });
       const {
-        signup: { token },
+        signup: { token, user },
       } = data;
+      localStorage.setItem('userID', user.id);
       localStorage.setItem(jwtAuth, token);
 
       navigate('/');
