@@ -52,7 +52,7 @@ const CreateBountyModal = (props) => {
     });
     return pass;
   };
-  console.log('here', data);
+
   //on click checks the availabilty of the link, that is if it is already posted and in use
   const checkAvailability = async () => {
     let pass = true;
@@ -70,6 +70,7 @@ const CreateBountyModal = (props) => {
           toast.warning(
             'We are not currently making bounties on this news organization'
           );
+          pass = false;
         }
         if (pass) {
           toast.success('Available!');
@@ -79,6 +80,7 @@ const CreateBountyModal = (props) => {
         toast.warning('Please enter a vaild link');
       }
     } catch (error) {
+      toast.warning('Please enter a vaild link');
       console.error('error occured while verifying link', error);
     }
   };

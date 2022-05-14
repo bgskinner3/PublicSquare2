@@ -102,14 +102,18 @@ const resolvers = {
           bountyId: bountyId,
         },
       });
-
-      const id = conversation.id
-
-      
-
-
-      return conversation
+      return conversation;
     },
+    conversationMessages: async (parent, args) => {
+      const {conversationId} = args
+
+      const allMessages = await Message.findAll({
+        where: {
+          conversationId: conversationId,
+        },
+      });
+      return allMessages;
+    }
   },
   Upload: GraphQLUpload,
   Date: dateScalar,
@@ -161,7 +165,6 @@ const resolvers = {
             expiresIn: '6h',
           }
         );
-
         return {
           token,
           user,
@@ -193,6 +196,8 @@ const resolvers = {
         console.error('signup failed!', error);
       }
     },
+    //added creating a conversation as well, as when a bounty is created
+    //in addition a conversation is also made
     createBounty: async (parent, args, context) => {
       try {
         const existingBounty = await Bounty.findOne({
@@ -219,6 +224,7 @@ const resolvers = {
       const post = await Bounty.findByPk(id);
       await post.destroy();
     },
+
     updateBounty: async (parent, args) => {
       const {
         id,
@@ -351,9 +357,39 @@ const resolvers = {
       }
     },
     createMessage: async (parent, args) => {
-      const { content, conversationId, userId } = args.input;
-      const message = Message.create({ ...args.input });
-      return message;
+      try {
+        let add = true;
+        const { content, conversationId, userId, bountyId } = args.input;
+        const conversation = await Conversation.findOne({
+          where: {
+            bountyId: bountyId,
+          },
+        });
+        const search = conversation.users.split(' ');
+        search.map((user) => {
+          if (user === userId) {
+            add = false;
+          }
+        });
+
+        if (add) {
+          UserToConversation.create({
+            ...args.input,
+          });
+
+          search.push(userId);
+
+          conversation.set({
+            users: search.join(' '),
+          });
+          await conversation.save();
+        }
+
+        const message = await Message.create({ ...args.input });
+        return message;
+      } catch (error) {
+        console.error('error with message', error);
+      }
     },
   },
 };

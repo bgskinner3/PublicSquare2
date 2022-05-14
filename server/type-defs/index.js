@@ -71,7 +71,7 @@ const typeDefs = gql`
     bountyvote(id: ID!): BountyVote!
     userbountyvotes(userId: ID!): [BountyVote!]
     singlebountyvotes(bountyId: ID!): [BountyVote!]
-    bountyConversation(bountyId: ID!): Conversation
+    bountyConversation(bountyId: ID!): Conversation!
     conversationMessages(conversationId: ID!): [Messages]
   }
   input UserInput {
@@ -134,6 +134,7 @@ const typeDefs = gql`
     content: String
     conversationId: ID
     userId: ID
+    bountyId: ID
   }
   type Mutation {
     login(username: String!, password: String!): AuthPayload!
@@ -149,7 +150,7 @@ const typeDefs = gql`
     uploadFile(file: Upload!): File!
     createBountyVote(input: createBountyVoteInput!): BountyVote
     addUserToConversation(input: updateConversationInput!): Conversation
-    createMessage(input: createMessageInput): Message
+    createMessage(input: createMessageInput!): Messages
   }
   enum FakeOrReal {
     fake

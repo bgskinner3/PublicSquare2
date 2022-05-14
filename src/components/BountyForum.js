@@ -1,7 +1,7 @@
 import React from "react";
 
 
-const ForumArticle = () => {
+const BountyForum = () => {
 
 
   return (
@@ -13,4 +13,4 @@ const ForumArticle = () => {
   )
 }
 
-export default ForumArticle;
+export default BountyForum;

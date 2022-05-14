@@ -130,3 +130,24 @@ export const GET_SINGLE_BOUNTY_VOTES = gql`
     }
   }
 `;
+
+export const GET_BOUNTY_CONVERSATION = gql`
+  query ($bountyId: ID!) {
+    bountyConversation(bountyId: $bountyId) {
+    id
+    users 
+    bountyId
+    }
+  }
+`;
+
+export const GET_CONVERSATION_MESSAGES = gql`
+  query ($conversationId: ID!) {
+    conversationMessages(conversationId: $conversationId) {
+      id
+      userId
+      content
+      conversationId
+    }
+  }
+`;

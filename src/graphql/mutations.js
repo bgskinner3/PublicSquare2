@@ -113,10 +113,31 @@ export const DELETE_BOUNTY_MUTATION = gql`
 export const CREATE_BOUNTY_VOTE_MUTATION = gql`
   mutation createBountyVote($input: createBountyVoteInput!) {
     createBountyVote(input: $input) {
-    userId
-    bountyId
-    positiveVote
-    negativeVote
+      userId
+      bountyId
+      positiveVote
+      negativeVote
+    }
+  }
+`;
+
+export const CREATE_MESSAGE_MUTATION = gql`
+  mutation createMessage($input: createMessageInput!) {
+    createMessage(input: $input) {
+      content
+      conversationId
+      userId
+      bountyId
+    }
+  }
+`;
+
+export const ADD_USER_TO_CONVERSATION = gql`
+  mutation addUserToConversation($input: updateConversationInput!) {
+    addUserToConversation(input: $input) {
+      conversationId
+      userId
+      bountyId
     }
   }
 `;
