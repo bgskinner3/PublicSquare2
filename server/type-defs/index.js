@@ -3,9 +3,6 @@ const { gql } = require('apollo-server-express');
 const typeDefs = gql`
   scalar Upload
   scalar Date
-  type Subscription {
-    newMessage(conversationId: ID!): [Messages]
-  }
   type File {
     url: String!
   }
@@ -75,6 +72,7 @@ const typeDefs = gql`
     singlebountyvotes(bountyId: ID!): [BountyVote!]
     bountyConversation(bountyId: ID!): Conversation!
     conversationMessages(conversationId: ID!): [Messages]
+    messages: [Messages]
   }
   input UserInput {
     username: String!
@@ -137,11 +135,6 @@ const typeDefs = gql`
     conversationId: ID
     userId: ID
   }
-  input AddNewMessage {
-    content: String
-    conversationId: ID
-    userId: ID
-  }
   type Mutation {
     login(username: String!, password: String!): AuthPayload!
     signup(username: String!, password: String!): AuthPayload!
@@ -157,7 +150,10 @@ const typeDefs = gql`
     createBountyVote(input: createBountyVoteInput!): BountyVote
     addUserToConversation(input: updateConversationInput!): Conversation
     createMessage(input: createMessageInput!): Messages
-    addNewMessage(input: createMessageInput!): Messages
+    sendMessage(input: createMessageInput!): Messages
+  }
+  type Subscription {
+    messageSent: Messages
   }
   enum FakeOrReal {
     fake
@@ -175,3 +171,4 @@ const typeDefs = gql`
   }
 `;
 module.exports = { typeDefs };
+ //addNewMessage(input: createMessageInput!): Messages

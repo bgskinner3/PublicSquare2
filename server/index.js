@@ -112,7 +112,7 @@ const httpServer = http.createServer(app);
 // Create our WebSocket server using the HTTP server we just set up.
 const wsServer = new WebSocketServer({
   server: httpServer,
-  path: '/graphql',
+  path: 'ws://localhost:4000/graphql',
 });
 
 const StartServer = async () => {
@@ -146,20 +146,21 @@ const StartServer = async () => {
         },
       },
     ],
+    subscriptions: { path: 'ws://localhost:4000/graphql' },
   });
 
   await server.start();
 
   app.use(graphqlUploadExpress());
-    app.use( cors());
-  //app.use('*', cors());
+    //app.use( cors());
+  app.use('*', cors());
   // app.use(express.static(path.join(__dirname, '../build')));
   // app.get('/*', (req, res) => {
   //   res.sendFile(path.join(__dirname, '../build/index.html'));
   // });
   app.use(errorHandler);
- // server.applyMiddleware({ path: '/graphql', app });
- server.applyMiddleware({ app });
+ server.applyMiddleware({ path: '/graphql', app });
+ //server.applyMiddleware({ app });
   await new Promise((resolve) =>
     httpServer.listen({ port: process.env.PORT || 4000 }, resolve)
   );

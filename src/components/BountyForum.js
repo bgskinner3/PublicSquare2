@@ -1,13 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import Message from './Message';
-import { useQuery, useMutation } from '@apollo/client';
+import { useQuery, useMutation, useSubscription } from '@apollo/client';
 import {
   GET_CONVERSATION_MESSAGES,
   GET_BOUNTY_CONVERSATION,
 } from '../graphql/queries';
 import { CREATE_MESSAGE_MUTATION } from '../graphql/mutations';
 import { Loading } from '.';
+import { gql } from '@apollo/client';
+
+
+const MESSAGES_SUBSCRIPTION = gql`
+  subscription messageSent($conversationId: ID!) {
+    messageSent(conversationId: $conversationId) {
+      content
+      conversationId
+      userId
+    }
+  }
+`;
+
 
 const BountyForum = () => {
   const [conversationId, setConversationId] = useState('');
@@ -25,6 +38,12 @@ const BountyForum = () => {
     },
   });
   const [createMessage] = useMutation(CREATE_MESSAGE_MUTATION);
+
+  const { data: test } = useSubscription(MESSAGES_SUBSCRIPTION, {
+    variables: {
+      conversationId: id
+    },
+  });
 
   useEffect(() => {
     getMessages();
@@ -60,7 +79,7 @@ const BountyForum = () => {
       console.error('didnt not create message', error);
     }
   };
-
+console.log('testing in client subscriptions', test)
   return loading ? (
     <Loading />
   ) : (
