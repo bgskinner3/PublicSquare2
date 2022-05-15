@@ -15,7 +15,8 @@ Bounty.belongsTo(User);
 User.hasMany(BountyVote)
 BountyVote.belongsTo(User)
 
-
+Bounty.hasMany(BountyVote);
+BountyVote.belongsTo(Bounty)
 
 NewsSource.hasMany(Bounty);
 Bounty.belongsTo(NewsSource);

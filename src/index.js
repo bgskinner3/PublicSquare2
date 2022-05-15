@@ -10,15 +10,9 @@ import {
   ApolloProvider,
   ApolloLink,
   from,
-  split,
 } from '@apollo/client';
 
 import { createUploadLink } from 'apollo-upload-client';
-//subscr[tions import]
-
-import { getMainDefinition } from '@apollo/client/utilities';
-import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
-import { createClient } from 'graphql-ws';
 const jwtAuth = process.env.REACT_APP_JWT_SECRET;
 
 const authLink = new ApolloLink((operation, forward) => {
@@ -36,7 +30,6 @@ const authLink = new ApolloLink((operation, forward) => {
 
   return forward(operation);
 });
-
 
 const customFetch = (uri, options) => {
   return fetch(uri, options).then(async (response) => {
@@ -63,42 +56,16 @@ if (process.env.NODE_ENV === 'production') {
 
 const httpLink = createUploadLink({
   uri: "http://localhost:4000/graphql",
-  fetch: customFetch(),
+  fetch: customFetch,
 });
-
-const wsLink = new GraphQLWsLink(
-  createClient({
-    url: 'ws://localhost:4000/graphql',
-  })
-);
 
 //for heroku build
 //http://localhost:4000/graphql
 //https://brennanskinner.herokuapp.com/graphql
 
-
-// The split function takes three parameters:
-//
-// * A function that's called for each operation to execute
-// * The Link to use for an operation if the function returns a "truthy" value
-// * The Link to use for an operation if the function returns a "falsy" value
-
-const splitLink = split(
-  ({ query }) => {
-    const definition = getMainDefinition(query);
-    return (
-      definition.kind === 'OperationDefinition' &&
-      definition.operation === 'subscription'
-    );
-  },
-  wsLink,
-  httpLink
-);
-
-
 const client = new ApolloClient({
   cache: new InMemoryCache(),
-  link: from([authLink, splitLink]),
+  link: from([authLink, httpLink]),
 });
 
 const root = ReactDOM.createRoot(document.getElementById('root'));

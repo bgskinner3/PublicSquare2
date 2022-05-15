@@ -46,8 +46,8 @@ const dateScalar = new GraphQLScalarType({
 
 //for subscriptions
 //const pubsub = new RedisPubSub();
-const pubsub = new PubSub();
-const MESSAGE_ADDED = 'MESSAGE_ADDED';
+// const pubsub = new PubSub();
+// const MESSAGE_ADDED = 'MESSAGE_ADDED';
 
 const resolvers = {
   Query: {
@@ -318,7 +318,8 @@ const resolvers = {
           },
           raw: true,
         });
-
+        console.log('is this true', exisitngUserVote);
+        console.log('args in bounty voite', args.input)
         if (exisitngUserVote) {
           return new Error(' You have already voted on this');
         }
@@ -411,52 +412,52 @@ const resolvers = {
         console.error('error with message', error);
       }
     },
-    sendMessage: async (parent, args) => {
-     try {
-      //   let add = true;
-      //   const {  conversationId, userId } = args.input;
-      //   const conversation = await Conversation.findOne({
-      //     where: {
-      //       id: conversationId,
-      //     },
-      //   });
-      //   const search = conversation.users.split(' ');
-      //   search.map((user) => {
-      //     if (user === userId) {
-      //       add = false;
-      //     }
-      //   });
+  //   sendMessage: async (parent, args) => {
+  //    try {
+  //     //   let add = true;
+  //     //   const {  conversationId, userId } = args.input;
+  //     //   const conversation = await Conversation.findOne({
+  //     //     where: {
+  //     //       id: conversationId,
+  //     //     },
+  //     //   });
+  //     //   const search = conversation.users.split(' ');
+  //     //   search.map((user) => {
+  //     //     if (user === userId) {
+  //     //       add = false;
+  //     //     }
+  //     //   });
 
-      //   if (add) {
-      //     UserToConversation.create({
-      //       userId: userId,
-      //       conversationId: conversationId,
-      //     });
+  //     //   if (add) {
+  //     //     UserToConversation.create({
+  //     //       userId: userId,
+  //     //       conversationId: conversationId,
+  //     //     });
 
-      //     search.push(userId);
+  //     //     search.push(userId);
 
-      //     conversation.set({
-      //       users: search.join(' '),
-      //     });
-      //     await conversation.save();
-      //   }
-        const message = await Message.create({ ...args.input });
+  //     //     conversation.set({
+  //     //       users: search.join(' '),
+  //     //     });
+  //     //     await conversation.save();
+  //     //   }
+  //       const message = await Message.create({ ...args.input });
 
-        await pubsub.publish(MESSAGE_ADDED, { sendMessage: message });
-        return message;
+  //       await pubsub.publish(MESSAGE_ADDED, { sendMessage: message });
+  //       return message;
         
-      } catch (error) {
-        console.error('error with message', error);
-      }
+  //     } catch (error) {
+  //       console.error('error with message', error);
+  //     }
       
-    },
-  },
-  Subscription: {
-    messageSent: {
-      subscribe: () => {
-        return pubsub.asyncIterator([MESSAGE_ADDED]);
-      },
-    },
+  //   },
+  // },
+  // Subscription: {
+  //   messageSent: {
+  //     subscribe: () => {
+  //       return pubsub.asyncIterator([MESSAGE_ADDED]);
+  //     },
+  //   },
   },
 };
 

@@ -5,17 +5,15 @@ import { Loading } from '.';
 import { CREATE_BOUNTY_VOTE_MUTATION } from '../graphql/mutations';
 import VotingBountyProgress from './VotingBountyProgress';
 import { toast } from 'react-toastify';
-const jwtAuth = process.env.REACT_APP_JWT_SECRET;
+
 
 const BountyVote = () => {
   const [activeBounties, setActiveBounties] = useState([]);
   const [userVoted, setUserVoted] = useState([]);
   const [bountyId, setBountyId] = useState('');
   const { data, loading, refetch } = useQuery(GET_ALL_BOUNTIES);
-  const authToken = localStorage.getItem(jwtAuth);
-  const { data: user } = useQuery(GET_SINGLE_USER, {
-    variables: { token: authToken },
-  });
+   const userId = localStorage.getItem('userID');
+  
 
   const [createBountyVote] = useMutation(CREATE_BOUNTY_VOTE_MUTATION);
 
@@ -48,10 +46,11 @@ const BountyVote = () => {
             bountyId: bountyId,
             positiveVote: positive,
             negativeVote: negative,
-            userId: user.user.id,
+            userId: userId,
           },
         },
       });
+      toast.success('thank you for voting');
       console.log(data);
     } catch (error) {
       toast.error('You Have Already Voted On This');
