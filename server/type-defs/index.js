@@ -21,6 +21,8 @@ const typeDefs = gql`
     content: String
     conversationId: ID
     userId: ID
+    username: String
+    createdAt: Date
   }
   type Bounty {
     id: ID!
@@ -134,6 +136,7 @@ const typeDefs = gql`
     content: String
     conversationId: ID
     userId: ID
+    username: String
   }
   type Mutation {
     login(username: String!, password: String!): AuthPayload!
@@ -150,11 +153,8 @@ const typeDefs = gql`
     createBountyVote(input: createBountyVoteInput!): BountyVote
     addUserToConversation(input: updateConversationInput!): Conversation
     createMessage(input: createMessageInput!): Messages
-    sendMessage(input: createMessageInput!): Messages
   }
-  type Subscription {
-    messageSent: Messages
-  }
+
   enum FakeOrReal {
     fake
     real

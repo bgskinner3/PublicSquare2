@@ -1,6 +1,6 @@
 import React from 'react';
 import publicsquarelogo from '../images/publicsquarelogo.png';
-import logogold from '../images/logogold.png'
+import logogold from '../images/logogold.png';
 import { Link } from 'react-router-dom';
 import 'tw-elements';
 import { useNavigate } from 'react-router-dom';
@@ -147,7 +147,7 @@ const NavBar = () => {
                     data-mdb-ripple="true"
                     data-mdb-ripple-color="dark"
                     onClick={() => {
-                      navigate(`/create`);
+                      navigate(`/createmain`);
                     }}
                   >
                     <div>
@@ -184,35 +184,6 @@ const NavBar = () => {
                       <NewspaperIcon />
                       <p className="text-xs">News Organizations</p>
                     </div>
-                  </div>
-                </li>
-
-                {/* {data.user.admin ? (
-                  <li className="relative">
-                    <div
-                      className="flex items-center text-base py-4 px-6 h-12 overflow-hidden text-gray-700 text-ellipsis whitespace-nowrap rounded hover:text-gray-900 hover:bg-gray-100 transition duration-200 ease-in-out"
-                      data-mdb-ripple="true"
-                      data-mdb-ripple-color="dark"
-                      onClick={() => {
-                        navigate(`/addsource`);
-                      }}
-                    >
-                      Add NewsSource
-                    </div>
-                  </li>
-                ) : (
-                  <></>
-                )} */}
-                <li className="relative">
-                  <div
-                    className="flex items-center text-base py-4 px-6 h-12 overflow-hidden text-gray-700 text-ellipsis whitespace-nowrap rounded hover:text-gray-900 hover:bg-gray-100 transition duration-200 ease-in-out"
-                    data-mdb-ripple="true"
-                    data-mdb-ripple-color="dark"
-                    onClick={() => {
-                      navigate(`/addsource`);
-                    }}
-                  >
-                    Add NewsSource
                   </div>
                 </li>
                 <li className="relative">

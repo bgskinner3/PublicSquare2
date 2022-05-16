@@ -127,6 +127,7 @@ export const CREATE_MESSAGE_MUTATION = gql`
       content
       conversationId
       userId
+      username
     }
   }
 `;

@@ -6,7 +6,9 @@ const Message = db.define('message', {
     type: Sequelize.STRING,
     allowNull: false,
   },
-  
+  username: {
+    type: Sequelize.STRING
+  }
 });
 
 module.exports = { Message };

@@ -148,6 +148,8 @@ export const GET_CONVERSATION_MESSAGES = gql`
       userId
       content
       conversationId
+      username
+      createdAt
     }
   }
 `;

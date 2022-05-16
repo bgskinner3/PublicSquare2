@@ -6,14 +6,12 @@ import { CREATE_BOUNTY_VOTE_MUTATION } from '../graphql/mutations';
 import VotingBountyProgress from './VotingBountyProgress';
 import { toast } from 'react-toastify';
 
-
 const BountyVote = () => {
   const [activeBounties, setActiveBounties] = useState([]);
   const [userVoted, setUserVoted] = useState([]);
   const [bountyId, setBountyId] = useState('');
   const { data, loading, refetch } = useQuery(GET_ALL_BOUNTIES);
-   const userId = localStorage.getItem('userID');
-  
+  const userId = localStorage.getItem('userID');
 
   const [createBountyVote] = useMutation(CREATE_BOUNTY_VOTE_MUTATION);
 
@@ -40,7 +38,7 @@ const BountyVote = () => {
   const handleVote = async (voting) => {
     try {
       const { positive, negative } = voting;
-      const { data } = await createBountyVote({
+      await createBountyVote({
         variables: {
           input: {
             bountyId: bountyId,
@@ -50,8 +48,7 @@ const BountyVote = () => {
           },
         },
       });
-      toast.success('thank you for voting');
-      console.log(data);
+      refetch();
     } catch (error) {
       toast.error('You Have Already Voted On This');
       console.error('already', error);
@@ -135,7 +132,7 @@ const BountyVote = () => {
               </div>
               <div className="border-r border-gray-900" />
               <div className="grid grid-cols-2 gap-x-20 relative ml-5">
-                <VotingBountyProgress id={bounty.id} />
+                <VotingBountyProgress id={bounty.id} refetch={refetch}/>
                 <label
                   htmlFor="my-modal-3"
                   className="btn modal-button mt-5"

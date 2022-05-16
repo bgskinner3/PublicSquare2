@@ -32,7 +32,7 @@ const SingleBounty = () => {
   }
 
 
-console.log(data)
+
   return loading ? (
     <Loading />
   ) : (

@@ -4,7 +4,7 @@ import { useQuery } from '@apollo/client';
 import { Loading } from '.';
 
 const VotingBountyProgress = (props) => {
-  const { id } = props;
+  const { id, refetch } = props;
   const [realPercentage, setRealPercentage] = useState({
     '--value': 0
   })
@@ -16,7 +16,7 @@ const VotingBountyProgress = (props) => {
     '--value': 0,
   };
 
-  const { data, loading, refetch } = useQuery(GET_SINGLE_BOUNTY_VOTES, {
+  const { data, loading } = useQuery(GET_SINGLE_BOUNTY_VOTES, {
     variables: {
       bountyId: id,
     },
@@ -66,8 +66,9 @@ const VotingBountyProgress = (props) => {
     let percentage = positive / (positive + negative) * 100
     return percentage;
   }
-  
 
+
+  
 
   return loading ? (
     <Loading />
